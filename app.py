@@ -1,71 +1,44 @@
-from flask import Flask, request, jsonify, render_template
-from omni_calc import calculate_resultant_vector, polar_to_cartesian
-from config import robot_radius
+import pygame
+from pygame.transform import scale
 
-app = Flask(__name__)
+from omni_robot import Omni
 
-# Field dimensions in mm
-FIELD_WIDTH = 3000
-FIELD_HEIGHT = 2000
+pygame.init()
 
-# Robot initial position and angle
-robot_x = FIELD_WIDTH / 2
-robot_y = FIELD_HEIGHT / 2
-robot_angle = 0  # in degrees
+width, height = 900, 600
 
-robot_width = 100  # mm
-robot_height = 100  # mm
+# 900 / 3000 * размер в мм = размер в пикселях
 
-# Constants
-# WHEEL_RADIUS = 50  # mm
-ROBOT_RADIUS = 200  # mm
+# создаем окно размера 800 на 600
+screen = pygame.display.set_mode((width, height))
+# загружаем картинку из папки
+big_sky = pygame.image.load("static/images/field.png")
+# масштабируем картинку под размер экрана
+sky = scale(big_sky, (width, height))
 
+# указываем название
+pygame.display.set_caption("Omni sim")
+clock = pygame.time.Clock()
 
-@app.route("/")
-def index():
-    return render_template("index.html")
+main_robot = Omni(20, 20)
 
+main_robot.set_target(50, 50, 0, 20)
 
-@app.route('/get_position', methods=['GET'])
-def get_position():
-    return jsonify({'x': robot_x, 'y': robot_y, 'angle': robot_angle, 'width': robot_width, 'height': robot_height})
+# игровой цикл
+while True:
+    dt = clock.tick(10)
+    # обрабатываем события
+    for e in pygame.event.get():
+        # если нажали на крестик
+        if e.type == pygame.QUIT:
+            # закрыть окно
+            raise SystemExit("QUIT")
 
+    # рисуем картинку с небом на экране
+    screen.blit(sky, (0, 0))
 
-@app.route('/set_movement', methods=['POST'])
-def set_movement():
-    global robot_x, robot_y, robot_angle
-    data = request.json
-    speed1 = int(data['speed1'])  # mm/sec
-    speed2 = int(data['speed2'])  # mm/sec
-    speed3 = int(data['speed3'])  # mm/sec
-    time = int(data['time'])  # sec
+    main_robot.update(dt)
+    main_robot.draw(screen)
 
-    resultant_length, resultant_angle = calculate_resultant_vector(speed1, speed2, speed3, robot_radius)
-
-    resultant_length, resultant_angle = round(resultant_length, 2), round(resultant_angle, 2)
-
-    if round(resultant_length) != 0:
-        v_x, v_y = polar_to_cartesian(resultant_length, robot_angle)
-        robot_x += v_x * time
-        robot_y += v_y * time
-    else:
-        v_x, v_y = 0, 0
-        omega_z = resultant_angle
-        robot_angle += omega_z * time
-        robot_angle %= 360
-
-    # Update robot position
-    # robot_x += v_x * time
-    # robot_y += v_y * time
-    # robot_angle += omega_z * time
-    # robot_angle %= 360
-
-    # Ensure the robot stays within the field
-    robot_x = max(0, min(FIELD_WIDTH, robot_x))
-    robot_y = max(0, min(FIELD_HEIGHT, robot_y))
-
-    return jsonify({'x': robot_x, 'y': robot_y, 'angle': robot_angle})
-
-
-if __name__ == '__main__':
-    app.run(debug=True)
+    # перерисовать окно
+    pygame.display.update()
