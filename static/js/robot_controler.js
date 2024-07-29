@@ -1,15 +1,28 @@
 $(document).ready(function () {
-    const field = $('#field');
-    const robot = $('#robot');
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    const robotImage = new Image();
+    robotImage.src = '/static/images/omni_main.png';
+
+    const fieldWidthMM = 3000;
+    const fieldHeightMM = 2000;
+    const robotWidthMM = 270;
+    const robotHeightMM = 270;
 
     function updateRobotPosition(x, y, angle) {
-        const fieldWidth = field.width();
-        const fieldHeight = field.height();
-        const posX = (x / 3000) * fieldWidth;
-        const posY = (y / 2000) * fieldHeight;
-        robot.css('left', posX + 'px');
-        robot.css('top', posY + 'px');
-        robot.css('transform', 'rotate(' + angle + 'deg)');
+        const canvasWidth = canvas.width;
+        const canvasHeight = canvas.height;
+        const posX = (x / fieldWidthMM) * canvasWidth;
+        const posY = (y / fieldHeightMM) * canvasHeight;
+        const robotWidth = (robotWidthMM / fieldWidthMM) * canvasWidth;
+        const robotHeight = (robotHeightMM / fieldHeightMM) * canvasHeight;
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.save();
+        ctx.translate(posX, posY);
+        ctx.rotate(angle * Math.PI / 180);
+        ctx.drawImage(robotImage, -robotWidth / 2, -robotHeight / 2, robotWidth, robotHeight);
+        ctx.restore();
     }
 
     function getPosition() {

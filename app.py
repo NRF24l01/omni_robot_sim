@@ -13,6 +13,9 @@ robot_x = FIELD_WIDTH / 2
 robot_y = FIELD_HEIGHT / 2
 robot_angle = 0  # in degrees
 
+robot_width = 100  # mm
+robot_height = 100  # mm
+
 # Constants
 # WHEEL_RADIUS = 50  # mm
 ROBOT_RADIUS = 200  # mm
@@ -25,7 +28,7 @@ def index():
 
 @app.route('/get_position', methods=['GET'])
 def get_position():
-    return jsonify({'x': robot_x, 'y': robot_y, 'angle': robot_angle})
+    return jsonify({'x': robot_x, 'y': robot_y, 'angle': robot_angle, 'width': robot_width, 'height': robot_height})
 
 
 @app.route('/set_movement', methods=['POST'])
@@ -42,17 +45,20 @@ def set_movement():
     resultant_length, resultant_angle = round(resultant_length, 2), round(resultant_angle, 2)
 
     if round(resultant_length) != 0:
-        v_x, v_y = polar_to_cartesian(resultant_length, resultant_angle)
-        omega_z = 0
+        v_x, v_y = polar_to_cartesian(resultant_length, robot_angle)
+        robot_x += v_x * time
+        robot_y += v_y * time
     else:
         v_x, v_y = 0, 0
         omega_z = resultant_angle
+        robot_angle += omega_z * time
+        robot_angle %= 360
 
     # Update robot position
-    robot_x += v_x * time
-    robot_y += v_y * time
-    robot_angle += omega_z * time
-    robot_angle %= 360
+    # robot_x += v_x * time
+    # robot_y += v_y * time
+    # robot_angle += omega_z * time
+    # robot_angle %= 360
 
     # Ensure the robot stays within the field
     robot_x = max(0, min(FIELD_WIDTH, robot_x))
