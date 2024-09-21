@@ -46,6 +46,7 @@ def count_bot_moving(steps,angle,coords):
 
     print("a:",a)
     print("summed vector:",summed_vector)
+    print("rotation:",a[1])
     print("res:",result)
     
     """
@@ -54,8 +55,8 @@ def count_bot_moving(steps,angle,coords):
     """
     
 vectors = [
-  [100, 0],
-  [300, 120],
+  [000, 0],
+  [100, 120],
   [100,240]
 ]
 
