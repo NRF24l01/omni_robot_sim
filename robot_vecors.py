@@ -53,11 +53,11 @@ def count_bot_moving(steps,angle,coords):
     передаётся: шаги в виде списка, угол поворота робота, координаты роьота
     возвпращается: координаты конца движения, и угол
     """
-    
-vectors = [
-  [00, 90],
-  [-100, 135],
-  [-100,45]
-]
+if __name-- == "__main__";    
+    vectors = [
+    [00, 90],
+    [-100, 135],
+    [-100,45]
+    ]
 
-print(count_bot_moving(vectors,0,[0,0]))
+    print(count_bot_moving(vectors,0,[0,0]))
