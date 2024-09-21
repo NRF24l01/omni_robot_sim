@@ -6,8 +6,8 @@ def sum_vectors(vectors):
     for length, angle in vectors:
         x_sum += length * math.cos(math.radians(angle))
         y_sum += length * math.sin(math.radians(angle))
-    result_length = math.sqrt(x_sum**2 + y_sum**2)
-    result_angle = math.degrees(math.atan2(y_sum, x_sum))
+    result_length = round(math.sqrt(x_sum**2 + y_sum**2))
+    result_angle = round(math.degrees(math.atan2(y_sum, x_sum)))
     return result_length, result_angle
 def rotate_vectors(vectors):
     for i in range(len(vectors)):
@@ -31,8 +31,8 @@ def check_rotation(steps):
         rotation_steps = 0
     return [steps, rotation_steps]
 def vector_to_coords(vector):
-    x = int(vector[0] * math.cos(math.radians(vector[1])))
-    y = int(vector[0] * math.sin(math.radians(vector[1])))
+    x = round(vector[0] * math.cos(math.radians(vector[1])))
+    y = round(vector[0] * math.sin(math.radians(vector[1])))
     return x,y
 def count_bot_moving(steps,angle,coords):
     #res = list(list(zip(*aaa))[1]
@@ -55,9 +55,9 @@ def count_bot_moving(steps,angle,coords):
     """
     
 vectors = [
-  [000, 0],
-  [100, 120],
-  [100,240]
+  [00, 90],
+  [-100, 135],
+  [-100,45]
 ]
 
 print(count_bot_moving(vectors,0,[0,0]))
