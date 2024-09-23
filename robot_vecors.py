@@ -36,7 +36,10 @@ def vector_to_coords(vector):
     return x,y
 def count_bot_moving(steps,angle,coords):
     #res = list(list(zip(*aaa))[1]
-    
+    vectors = [
+    [steps[0],90],
+    [steps[1],135],
+    [steps[2],45]]
     a = check_rotation(list(list(zip(*vectors))[0]))
     a[0][0] = [a[0][0],vectors[0][1]]
     a[0][1] = [a[0][1],vectors[1][1]]
@@ -44,20 +47,16 @@ def count_bot_moving(steps,angle,coords):
     summed_vector = sum_vectors(a[0])
     result = vector_to_coords(summed_vector)
 
-    print("a:",a)
-    print("summed vector:",summed_vector)
-    print("rotation:",a[1])
-    print("res:",result)
-    
+    #print("a:",a)
+    #print("summed vector:",summed_vector)
+    #print("rotation:",a[1])
+    #print("res:",result)
+    return result, a[1]
     """
     передаётся: шаги в виде списка, угол поворота робота, координаты роьота
     возвпращается: координаты конца движения, и угол
     """
-if __name__ == "__main__";    
-    vectors = [
-    [00, 90],
-    [-100, 135],
-    [-100,45]
-    ]
+if __name__ == "__main__":
 
-    print(count_bot_moving(vectors,0,[0,0]))
+    step = [0,-100,-100]
+    print(count_bot_moving(step,0,[0,0]))
