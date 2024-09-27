@@ -23,12 +23,14 @@ def check_rotation(steps):
     elif steps[0]<0 and steps[1]<0 and steps[2]<0:
         rotation_steps = max(steps)
         for i in range(len(steps)):
-            steps[i]=steps[i]+rotation_steps
+            steps[i]=steps[i]-rotation_steps
         
         print("left rotation")
     else:
         print("no rotations")
         rotation_steps = 0
+
+    print("steps:",steps)
     return [steps, rotation_steps]
 def vector_to_coords(vector):
     x = round(vector[0] * math.cos(math.radians(vector[1])))
@@ -58,5 +60,5 @@ def count_bot_moving(steps,angle,coords):
     """
 if __name__ == "__main__":
 
-    step = [0,-100,-100]
+    step = [-100,-100,-100]
     print(count_bot_moving(step,0,[0,0]))
