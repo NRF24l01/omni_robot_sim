@@ -1,44 +1,59 @@
-import pygame
-from pygame.transform import scale
+import customtkinter as ctk
+import math
 
-from omni_robot import Omni
+class Omni:
+    def __init__(self, canvas, x, y, radius):
+        self.canvas = canvas
+        self.x = x
+        self.y = y
+        self.radius = radius
+        self.motor_speeds = [0, 0, 0]
+        self.angle = 0  # Инициализация угла
+        self.dots = []
 
-pygame.init()
+    def set_target(self, m1, m2, m3, duration):
+        self.motor_speeds = [m1, m2, m3]
+        resultant_length, resultant_angle = self.calculate_resultant_vector()
+        self.dots.clear()
 
-width, height = 900, 600
+        if round(resultant_length) != 0:
+            self.angle = (self.angle + resultant_angle) % 360
+            self.xax = round(resultant_length * math.cos(math.radians(self.angle)), 4)
+            self.yax = round(resultant_length * math.sin(math.radians(self.angle)), 4)
+            self.xlost = round(self.xax * duration, 4)
+            self.ylost = round(self.yax * duration, 4)
+            self.dots.append((self.x + self.xlost, self.y + self.ylost))
 
-# 900 / 3000 * размер в мм = размер в пикселях
+    def calculate_resultant_vector(self):
+        resultant_length = math.sqrt(sum([speed ** 2 for speed in self.motor_speeds]))
+        resultant_angle = math.atan2(self.motor_speeds[1], self.motor_speeds[0]) * (180 / math.pi)
+        return resultant_length, resultant_angle
 
-# создаем окно размера 800 на 600
-screen = pygame.display.set_mode((width, height))
-# загружаем картинку из папки
-big_sky = pygame.image.load("static/images/field.png")
-# масштабируем картинку под размер экрана
-sky = scale(big_sky, (width, height))
+    def draw(self):
+        self.canvas.create_oval(self.x - self.radius, self.y - self.radius,
+                                self.x + self.radius, self.y + self.radius, fill="blue")
+        for dot in self.dots:
+            self.canvas.create_oval(dot[0] - 5, dot[1] - 5, dot[0] + 5, dot[1] + 5, fill="red")
 
-# указываем название
-pygame.display.set_caption("Omni sim")
-clock = pygame.time.Clock()
+class App:
+    def __init__(self, root):
+        self.root = root
+        self.root.geometry("900x600")
+        self.root.title("Omni Robot Simulation")
+        self.canvas = ctk.CTkCanvas(self.root, width=900, height=600, bg="white")
+        self.canvas.pack()
 
-main_robot = Omni(20, 20)
+        self.omni_robot = Omni(self.canvas, 100, 100, 30)
+        self.omni_robot.set_target(50, 50, 0, 1)  # Пример скорости и времени
 
-main_robot.set_target(50, 50, 0, 20)
+        self.update()
 
-# игровой цикл
-while True:
-    dt = clock.tick(10)
-    # обрабатываем события
-    for e in pygame.event.get():
-        # если нажали на крестик
-        if e.type == pygame.QUIT:
-            # закрыть окно
-            raise SystemExit("QUIT")
+    def update(self):
+        self.canvas.delete("all")
+        self.omni_robot.draw()
+        self.root.after(100, self.update)
 
-    # рисуем картинку с небом на экране
-    screen.blit(sky, (0, 0))
-
-    main_robot.update(dt)
-    main_robot.draw(screen)
-
-    # перерисовать окно
-    pygame.display.update()
+if __name__ == "__main__":
+    root = ctk.CTk()
+    app = App(root)
+    root.mainloop()
