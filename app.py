@@ -1,8 +1,9 @@
 import customtkinter as ctk
 from PIL import Image, ImageTk
 import math
-from omnirobot import OmniRobot
-from field
+from modules.omnirobot import OmniRobot
+from modules.field_items import Background
+from modules.pointer import Pointer
 
 
 class App:
@@ -16,24 +17,30 @@ class App:
         self.xsize = xsize
         self.ysize = ysize
 
-        self.bg = Image.open(background).resize((xsize, ysize), Image.LANCZOS)
+        self.bg = Background(background, xsize, ysize)
 
-        self.
+        self.pointer = Pointer()
+
+        self.root.bind('<Motion>', self.on_move)
 
         self.update()
 
     def update(self):
+        # Pre update
         self.canvas.delete("all")
 
-        self.canvas.image = ImageTk.PhotoImage(self.bg)
-        self.canvas.create_image(0, 0, image=self.canvas.image, anchor='nw')
+        # Draw static
+        self.bg.draw(self.canvas)
 
-        # Создаем объект робота
+        self.pointer.draw(self.canvas)
+
         robot = OmniRobot(distance_to_wheels=30, wheel_width=30, wheel_height=15)
-        # Рисуем робота на canvas в центре с поворотом на 45 градусов
         robot.draw(self.canvas, x=100, y=200, angle=90)
 
-        self.root.after(100, self.update)
+        self.root.after(1, self.update)
+
+    def on_move(self, event):
+        self.pointer.update(event.x, event.y)
 
 
 if __name__ == "__main__":

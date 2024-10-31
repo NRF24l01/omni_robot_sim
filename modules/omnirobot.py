@@ -2,6 +2,7 @@ import customtkinter as ctk
 import time
 import math
 
+
 class OmniRobot:
     def __init__(self, distance_to_wheels, wheel_width, wheel_height):
         self.distance_to_wheels = distance_to_wheels  # расстояние от центра робота до каждого колеса
