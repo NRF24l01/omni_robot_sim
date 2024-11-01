@@ -11,9 +11,6 @@ class Pointer(Dot):
         self.y = 0
 
         self.color_pallet = {1: "#ffffff", 2: "#9cff17", 3: "#17ff39", 4: "#ff17dd"}
-        self.blinkers = {1: None, 2: 0.5, 3: 0.5, 4: 0.5}
-        self.last_upd_time = 0
-        self.draw = 0
 
         self.ccolor = ""  # Current color
         self.state = 2
@@ -38,10 +35,4 @@ class Pointer(Dot):
         self.y = mouseY
 
     def draw(self, canvas: CTkCanvas):
-        if self.blinkers[self.state]:
-            if time() - self.last_upd_time > self.blinkers[self.state]:
-                if self.draw == 1:
-                    self.draw_dot(canvas, self.x, self.y, self.ccolor)
-                    self.draw = 0
-                else:
-                    self.draw = 1
+        self.draw_outline(canvas, self.x, self.y, ocolor=self.ccolor)
