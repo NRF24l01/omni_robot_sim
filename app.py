@@ -11,6 +11,8 @@ class App:
         self.root = root
         self.root.geometry(f"{str(xsize)}x{str(ysize)}")
         self.root.title("Omni Robot Simulation")
+        self.root.resizable(False, False)
+
         self.canvas = ctk.CTkCanvas(self.root, width=xsize, height=ysize, bg="white")
         self.canvas.pack()
 
@@ -32,6 +34,7 @@ class App:
         # Draw static
         self.bg.draw(self.canvas)
 
+        # Draw non static
         self.pointer.draw(self.canvas)
 
         robot = OmniRobot(distance_to_wheels=30, wheel_width=30, wheel_height=15)

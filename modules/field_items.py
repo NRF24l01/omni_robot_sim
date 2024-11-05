@@ -26,13 +26,21 @@ class Dot(Item):
         self.dot_radius = dot_radius
         self.colors = dot_colors
 
-    def draw_dot(self, canvas: CTkCanvas, x: int, y: int, color: str=None):
-        if not color: colot = choice(self.colors)
+    def draw_dot(self, canvas: CTkCanvas, x: int, y: int, fcolor: str=None):
+        if not fcolor: fcolor = choice(self.colors)
         x1 = x - self.dot_radius / 2
         x2 = x + self.dot_radius / 2
         y1 = y - self.dot_radius / 2
         y2 = y + self.dot_radius / 2
-        canvas.create_oval(x1, y1, x2, y2, outline=color, fill=color)
+        canvas.create_oval(x1, y1, x2, y2, outline=fcolor, fill=fcolor)
+
+    def draw_outline(self, canvas: CTkCanvas, x: int, y: int, ocolor: str=None):
+        if not ocolor: ocolor = choice(self.colors)
+        x1 = x - self.dot_radius / 2
+        x2 = x + self.dot_radius / 2
+        y1 = y - self.dot_radius / 2
+        y2 = y + self.dot_radius / 2
+        canvas.create_oval(x1, y1, x2, y2, outline=ocolor)
 
 
 class Path(Dot):
