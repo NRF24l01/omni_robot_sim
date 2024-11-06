@@ -7,20 +7,30 @@ from modules.omnirobot import OmniRobot
 from modules.field_items import Background
 from modules.pointer import Pointer
 
+from config import key_binds_txt
+
 
 class App(ctk.CTk):
     def __init__(self, background="static/images/field.png", xsize=960, ysize=640):
         super().__init__()
-        #self.geometry(f"{str(xsize)}x{str(ysize)}")
-        self.title("Omni Robot Simulation")
 
+        # Init
+        self.title("Omni Robot Simulation")
         self.resizable(False, False)
 
+        #
         self.canvas = ctk.CTkCanvas(self, width=xsize, height=ysize, bg="white")
         self.canvas.grid(row=0, column=0)
 
-        self.test = ctk.CTkButton(master=self, text="Pokaifu")
-        self.test.grid(row=0, column=1)
+        # Create right frame
+        self.right_frame = ctk.CTkFrame(self)
+        self.right_frame.grid(row=0, column=1, padx=10, pady=10, sticky="n")
+
+        self.keybinds_map = ctk.CTkLabel(self.right_frame, text=key_binds_txt)
+        self.keybinds_map.grid(row=0, column=0, pady=(10, 0), sticky="n")
+
+        self.mode_label = ctk.CTkLabel(self.right_frame, text="Режим: ничего")
+        self.mode_label.grid(row=1, column=0, pady=(10, 0), sticky="n")
 
         self.xsize = xsize
         self.ysize = ysize
