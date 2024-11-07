@@ -4,7 +4,7 @@ from PIL import Image, ImageTk
 import math
 
 from modules.omnirobot import OmniRobot
-from modules.field_items import Background
+from modules.field_items import Background, Path
 from modules.pointer import Pointer
 
 from config import key_binds_txt
@@ -45,12 +45,15 @@ class App(ctk.CTk):
         # Add pointer
         self.pointer = Pointer()
 
+        self.path = Path()
+
         # Binds
         self.bind('<Motion>', self.on_move)
         self.bind('s', self.on_button_click)
         self.bind('n', self.on_button_click)
         self.bind('c', self.on_button_click)
         self.bind("<Escape>", self.on_button_click)
+        self.bind("<Button-1>", self.on_left_mouse)
 
         self.update()
 
@@ -63,6 +66,7 @@ class App(ctk.CTk):
 
         # Draw non static
         self.pointer.draw(self.canvas)
+        self.path.draw(self.canvas)
 
         robot = OmniRobot(distance_to_wheels=30, wheel_width=30, wheel_height=15)
         robot.draw(self.canvas, x=100, y=200, angle=90)
@@ -99,6 +103,13 @@ class App(ctk.CTk):
 
     def on_move(self, event):
         self.pointer.update(event.x, event.y)
+
+    def on_left_mouse(self, event):
+        print("lkm")
+        if self.state == 1:
+            self.path.set_start_point(event.x, event.y)
+        elif self.state == 2:
+            self.path.add_point(event.x, event.y)
 
 
 if __name__ == "__main__":

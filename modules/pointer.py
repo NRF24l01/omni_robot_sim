@@ -5,7 +5,7 @@ from time import time
 
 class Pointer(Dot):
     def __init__(self, pointer_radius=10, pointer_color="#ffffff"):
-        super().__init__(dot_radius=pointer_radius, dot_colors=[pointer_color])
+        super().__init__(dot_radius=pointer_radius, dot_color=[pointer_color])
 
         self.x = 0
         self.y = 0
@@ -13,7 +13,7 @@ class Pointer(Dot):
         self.color_pallet = {1: "#ffffff", 2: "#9cff17", 3: "#17ff39", 4: "#ff17dd"}
 
         self.ccolor = ""  # Current color
-        self.state = 2
+        self.state_m = 2
 
     def change_color(self, color: str):
         self.colors = [color]
@@ -25,11 +25,11 @@ class Pointer(Dot):
         """
         if 0 > state > 5:
             raise IndexError
-        self.state = state
+        self.state_m = state
         self._color_update()
 
     def _color_update(self):
-        self.ccolor = self.color_pallet[self.state]
+        self.ccolor = self.color_pallet[self.state_m]
 
     def update(self, mouseX: int, mouseY: int):
         self.x = mouseX

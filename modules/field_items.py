@@ -22,12 +22,12 @@ class Background(Item):
 
 
 class Dot(Item):
-    def __init__(self, dot_radius=10, dot_colors=("#fb0")):
+    def __init__(self, dot_radius=10, dot_color="#fade91"):
         self.dot_radius = dot_radius
-        self.colors = dot_colors
+        self.color = dot_color
 
     def draw_dot(self, canvas: CTkCanvas, x: int, y: int, fcolor: str=None):
-        if not fcolor: fcolor = choice(self.colors)
+        if not fcolor: fcolor = self.color
         x1 = x - self.dot_radius / 2
         x2 = x + self.dot_radius / 2
         y1 = y - self.dot_radius / 2
@@ -35,7 +35,7 @@ class Dot(Item):
         canvas.create_oval(x1, y1, x2, y2, outline=fcolor, fill=fcolor)
 
     def draw_outline(self, canvas: CTkCanvas, x: int, y: int, ocolor: str=None):
-        if not ocolor: ocolor = choice(self.colors)
+        if not ocolor: ocolor = self.color
         x1 = x - self.dot_radius / 2
         x2 = x + self.dot_radius / 2
         y1 = y - self.dot_radius / 2
@@ -44,7 +44,7 @@ class Dot(Item):
 
 
 class Path(Dot):
-    def __init__(self, statr_point: tuple = (10, 10), path=None, dot_radius=10, dot_colors=("#fb0")):
+    def __init__(self, statr_point: tuple=None, path=None, dot_radius=10, dot_color="#fade91"):
         """
 
         :param statr_point: Tuple with x and y start points
@@ -52,7 +52,7 @@ class Path(Dot):
         :param dot_radius: Dot radius in px
         :param dot_colors: Dot colors, tuple
         """
-        super().__init__(dot_radius, dot_colors)
+        super().__init__(dot_radius, dot_color)
 
         if path is None:
             path = []
@@ -60,9 +60,16 @@ class Path(Dot):
         self.path = path
 
     def draw(self, canvas: CTkCanvas):
-        self.draw_dot(canvas, self.start_point[0], self.start_point[1])
-        for dot in self.path:
-            self.draw_dot(canvas, dot[0], dot[1])
+        if self.start_point:
+            self.draw_dot(canvas, self.start_point[0], self.start_point[1])
+            px, py = self.start_point[0], self.start_point[1]
+            for dot in self.path:
+                canvas.create_line(px, py, dot[0], dot[1])
+                px, py = dot[0], dot[1]
+                self.draw_dot(canvas, dot[0], dot[1])
 
-    def new_dot(self, x, y):
+    def add_point(self, x, y):
         self.path.append([x, y])
+
+    def set_start_point(self, x, y):
+        self.start_point = (x, y)
