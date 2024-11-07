@@ -23,9 +23,10 @@ class Pointer(Dot):
 
         :param state: 1 - waiting for command; 2 - set start point; 3 - set path point; 4 - remove point
         """
-        if 0 < state < 5:
+        if 0 > state > 5:
             raise IndexError
         self.state = state
+        self._color_update()
 
     def _color_update(self):
         self.ccolor = self.color_pallet[self.state]
