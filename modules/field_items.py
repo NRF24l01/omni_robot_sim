@@ -59,17 +59,24 @@ class Path(Dot):
         self.start_point = statr_point
         self.path = path
 
+        self.editing_point = None
+
     def draw(self, canvas: CTkCanvas):
         if self.start_point:
             self.draw_dot(canvas, self.start_point[0], self.start_point[1])
             px, py = self.start_point[0], self.start_point[1]
-            for dot in self.path:
+            for id, dot in enumerate(self.path):
                 canvas.create_line(px, py, dot[0], dot[1])
                 px, py = dot[0], dot[1]
-                self.draw_dot(canvas, dot[0], dot[1])
+                if id == self.editing_point:
+                    self.draw_dot(canvas, dot[0], dot[1], fcolor="#4287f5")
+                else:
+                    self.draw_dot(canvas, dot[0], dot[1])
 
     def add_point(self, x, y):
         self.path.append([x, y])
 
+    def underline_point(self, index):
+        self.editing_point = index
     def set_start_point(self, x, y):
         self.start_point = (x, y)
