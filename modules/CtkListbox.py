@@ -10,7 +10,6 @@ class CtkHoverSelectListbox(tk.Listbox):
 
         # Привязываем события
         self.bind("<Motion>", self.on_motion)  # Наведение мыши
-        self.bind("<<ListboxSelect>>", self.on_select)  # Выбор элемента
 
         # Заполняем Listbox элементами из начального списка данных
         self.refresh()
@@ -19,7 +18,7 @@ class CtkHoverSelectListbox(tk.Listbox):
         """Обработчик наведения мыши на элемент"""
         index = self.nearest(event.y)
         if index != self.last_index:
-            print(f"Наведен на элемент с индексом: {index}")
+            #print(f"Наведен на элемент с индексом: {index}")
             self.last_index = index
 
     def on_select(self, event):

@@ -63,6 +63,7 @@ class App(ctk.CTk):
         self.bind('n', self.on_button_click)
         self.bind('c', self.on_button_click)
         self.bind("<Escape>", self.on_button_click)
+        self.dotbox.bind("<<ListboxSelect>>", self.dot_selected)
 
         self.update()
 
@@ -85,6 +86,10 @@ class App(ctk.CTk):
 
         self.after(1, self.update)
 
+    def dot_selected(self, event):
+        print("cu", self.dotbox.curselection()[0])
+        self.path.underline_point(self.dotbox.curselection()[0])
+
     def on_button_click(self, event):
         print(event.keysym)
         if event.keysym == "s":
@@ -103,6 +108,7 @@ class App(ctk.CTk):
             # Change start point
             self.status = 0
             self.pointer.change_state(1)
+            self.path.deunderline_point()
         self.static_update()
 
     def static_update(self):

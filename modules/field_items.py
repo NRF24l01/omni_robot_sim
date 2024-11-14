@@ -78,5 +78,9 @@ class Path(Dot):
 
     def underline_point(self, index):
         self.editing_point = index
+
+    def deunderline_point(self):
+        self.editing_point = None
+
     def set_start_point(self, x, y):
         self.start_point = (x, y)
