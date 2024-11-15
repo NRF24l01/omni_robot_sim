@@ -12,6 +12,8 @@ from modules.CtkListbox import CtkHoverSelectListbox
 from config import key_binds_txt
 
 
+# User, dot = pathpoint
+
 class App(ctk.CTk):
     def __init__(self, background="static/images/field.png", xsize=960, ysize=640):
         super().__init__()
@@ -30,10 +32,6 @@ class App(ctk.CTk):
 
         self.dotbox = CtkHoverSelectListbox(self.right_frame)
         self.dotbox.grid(row=2, column=0, pady=(10, 0), sticky="n")
-
-        # Пример элементов в Listbox
-        for item in ["Элемент 1", "Элемент 2", "Элемент 3", "Элемент 4", "Элемент 5"]:
-            self.dotbox.insert(tk.END, item)
 
         # Create mode lable
         self.mode_label = ctk.CTkLabel(self.right_frame, text="Режим: ничего")
@@ -59,9 +57,15 @@ class App(ctk.CTk):
         # Binds
         self.canvas.bind('<Motion>', self.on_move)
         self.canvas.bind("<Button-1>", self.on_left_mouse)
-        self.bind('s', self.on_button_click)
-        self.bind('n', self.on_button_click)
-        self.bind('c', self.on_button_click)
+
+        # Bind path adding
+        self.bind('s', self.on_button_click)  # Add start button
+        self.bind('n', self.on_button_click)  # Add new path point
+
+        # Binds for changing path
+        self.bind('d', self.on_button_click)  # Delite dot
+        self.bind('m', self.on_button_click)  # Move dots
+
         self.bind("<Escape>", self.on_button_click)
         self.dotbox.bind("<<ListboxSelect>>", self.dot_selected)
 
@@ -87,7 +91,6 @@ class App(ctk.CTk):
         self.after(1, self.update)
 
     def dot_selected(self, event):
-        print("cu", self.dotbox.curselection()[0])
         self.path.underline_point(self.dotbox.curselection()[0])
 
     def on_button_click(self, event):
