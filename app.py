@@ -7,7 +7,7 @@ from json import dumps
 
 from modules.field_items import Background, Path
 from modules.pointer import Pointer
-from modules.CtkListbox import CtkHoverSelectListbox
+from modules.listbox import CtkHoverSelectListbox
 
 from config import key_binds_txt
 
