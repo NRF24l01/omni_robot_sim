@@ -1,31 +1,52 @@
 from customtkinter import CTkToplevel
 import customtkinter as ctk
 
+# Класс для окна подтверждения
+class ConfirmationWindow(ctk.CTkToplevel):
+    def __init__(self, master, title="Подтверждение", message="Вы уверены?"):
+        super().__init__(master)
+        self.title(title)
+        self.resizable(False, False)
 
-class ToplevelWindow(CTkToplevel):
-    def __init__(self, task: str="", *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        self.result = None
 
-        self.label = ctk.CTkLabel(self, text="Вы уверены")
-        self.label.pack(padx=20, pady=20)
+        self.label = ctk.CTkLabel(self, text=message, font=("Arial", 14))
+        self.label.pack(pady=20)
+
+        # Buttons container
+        self.button_frame = ctk.CTkFrame(self)
+        self.button_frame.pack(pady=10)
+
+        self.yes_button = ctk.CTkButton(self.button_frame, text="Да", command=self.on_yes)
+        self.yes_button.grid(row=0, column=0, padx=10)
+        self.no_button = ctk.CTkButton(self.button_frame, text="Нет", command=self.on_no)
+        self.no_button.grid(row=0, column=1, padx=10)
+
+        self.after(10, self.grab_set)
+
+    def on_yes(self):
+        self.result = True
+        self.destroy()
+
+    def on_no(self):
+        self.result = False
+        self.destroy()
 
 
 if __name__ == "__main__":
     class App(ctk.CTk):
-        def __init__(self, *args, **kwargs):
-            super().__init__(*args, **kwargs)
-            self.geometry("500x400")
+        def __init__(self):
+            super().__init__()
+            self.geometry("400x200")
+            self.title("Пример Confirm Toplevel")
 
-            self.button_1 = ctk.CTkButton(self, text="open toplevel", command=self.open_toplevel)
-            self.button_1.pack(side="top", padx=20, pady=20)
+            self.confirm_button = ctk.CTkButton(self, text="Открыть подтверждение", command=self.open_confirmation)
+            self.confirm_button.pack(pady=50)
 
-            self.toplevel_window = None
-
-        def open_toplevel(self):
-            if self.toplevel_window is None or not self.toplevel_window.winfo_exists():
-                self.toplevel_window = ToplevelWindow(self)  # create window if its None or destroyed
-            else:
-                self.toplevel_window.focus()  # if window exists focus it
+        def open_confirmation(self):
+            confirm_window = ConfirmationWindow(self, title="Вопрос", message="Вы уверены, что хотите продолжить?")
+            self.wait_window(confirm_window)
+            print("Ответ:", confirm_window.result)
 
 
     app = App()

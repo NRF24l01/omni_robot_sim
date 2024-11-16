@@ -1,3 +1,7 @@
+from time import time
+
+st_time = time()
+
 import customtkinter as ctk
 import tkinter as tk
 
@@ -8,15 +12,22 @@ from json import dumps
 from modules.field_items import Background, Path
 from modules.pointer import Pointer
 from modules.listbox import CtkHoverSelectListbox
+from modules.confirm_window import ConfirmationWindow
 
 from config import key_binds_txt
 
+from logger import Logger
 
-# User, dot = pathpoint
+st_time = time() - st_time
+
+# Dear reader, dot = pathpoint
 
 class App(ctk.CTk):
-    def __init__(self, background="static/images/field.png", xsize=960, ysize=640):
+    def __init__(self, logger: Logger, background="static/images/field.png", xsize=960, ysize=640):
+        app_init_time = time()
         super().__init__()
+        self.logger = logger
+        self.logger.info("Papa window inited!")
 
         # Init
         self.title("Omni Robot Simulation")
@@ -41,18 +52,19 @@ class App(ctk.CTk):
         self.keybinds_map = ctk.CTkLabel(self.right_frame, text=key_binds_txt)
         self.keybinds_map.grid(row=1, column=0, pady=(10, 0), sticky="n")
 
+        self.logger.info("Added elements")
+
         # Defines
         self.xsize = xsize
         self.ysize = ysize
         self.status = 0  # 0 - chill, 1 - set start point, 2 - add point
+        self.current_dot = None
 
-        # Add bg
-        self.bg = Background(background, xsize, ysize)
-
-        # Add pointer
+        # Initing
+        self.bg = Background(background, xsize, ysize, logger=self.logger)
         self.pointer = Pointer()
-
         self.path = Path()
+        self.logger.info("Items inited")
 
         # Binds
         self.canvas.bind('<Motion>', self.on_move)
@@ -68,6 +80,13 @@ class App(ctk.CTk):
 
         self.bind("<Escape>", self.on_button_click)
         self.dotbox.bind("<<ListboxSelect>>", self.dot_selected)
+        self.logger.info("Binded!")
+
+        app_init_time = time()-app_init_time
+
+        self.logger.info("Modules imported by", st_time)
+        self.logger.info("App inited by", app_init_time)
+        self.logger.info("Total running time:", st_time+app_init_time)
 
         self.update()
 
@@ -91,7 +110,8 @@ class App(ctk.CTk):
         self.after(1, self.update)
 
     def dot_selected(self, event):
-        self.path.underline_point(self.dotbox.curselection()[0])
+        self.current_dot = self.dotbox.curselection()[0]
+        self.path.underline_point(self.current_dot)
 
     def on_button_click(self, event):
         print(event.keysym)
@@ -100,19 +120,25 @@ class App(ctk.CTk):
             self.status = 1
             self.pointer.change_state(2)
         elif event.keysym == "n":
-            # Change start point
+            # Add new point
             self.status = 2
             self.pointer.change_state(3)
-        elif event.keysym == "c":
+        elif event.keysym == "d":
             # Change start point
-            self.status = 3
-            self.pointer.change_state(4)
+            self.delite_dot()
         elif event.keysym == "Escape":
-            # Change start point
+            # Escape :)
             self.status = 0
             self.pointer.change_state(1)
             self.path.deunderline_point()
         self.static_update()
+
+    def delite_dot(self):
+        confirm_window = ConfirmationWindow(self, title="Потвердите удаление.",
+                                            message="Вы уверены, что хотите удалить точку?")
+        self.wait_window(confirm_window)
+        if confirm_window.result:
+            self.path.path.pop(self.current_dot)
 
     def static_update(self):
         if self.status == 0:
@@ -134,5 +160,7 @@ class App(ctk.CTk):
 
 
 if __name__ == "__main__":
-    app = App()
+    logger = Logger()
+    logger.info("Started loading")
+    app = App(logger=logger)
     app.mainloop()
