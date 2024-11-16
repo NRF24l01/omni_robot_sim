@@ -114,7 +114,6 @@ class App(ctk.CTk):
         self.path.underline_point(self.current_dot)
 
     def on_button_click(self, event):
-        print(event.keysym)
         if event.keysym == "s":
             # Change start point
             self.status = 1
@@ -129,11 +128,16 @@ class App(ctk.CTk):
         elif event.keysym == "Escape":
             # Escape :)
             self.status = 0
+            self.current_dot = None
             self.pointer.change_state(1)
             self.path.deunderline_point()
         self.static_update()
 
     def delite_dot(self):
+        if not self.current_dot or self.current_dot >= len(self.path.path):
+            self.logger.warning("No dot selected")
+            self.current_dot = None
+            return
         confirm_window = ConfirmationWindow(self, title="Потвердите удаление.",
                                             message="Вы уверены, что хотите удалить точку?")
         self.wait_window(confirm_window)
@@ -152,7 +156,6 @@ class App(ctk.CTk):
         self.pointer.update(event.x, event.y)
 
     def on_left_mouse(self, event):
-        print("lkm")
         if self.status == 1:
             self.path.set_start_point(event.x, event.y)
         elif self.status == 2:
