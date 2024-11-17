@@ -36,4 +36,7 @@ class Pointer(Dot):
         self.y = mouseY
 
     def draw(self, canvas: CTkCanvas):
-        self.draw_outline(canvas, self.x, self.y, ocolor=self.ccolor)
+        if self.state_m != 4:
+            self.draw_outline(canvas, self.x, self.y, ocolor=self.ccolor)
+        else:
+            self.draw_dot(canvas, self.x, self.y, fcolor=self.ccolor)

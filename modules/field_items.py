@@ -60,6 +60,7 @@ class Background(Item):
 
 class Dot(Item):
     def __init__(self, dot_radius=10, dot_color="#fade91"):
+        super().__init__(logger=None)
         self.dot_radius = dot_radius
         self.color = dot_color
 

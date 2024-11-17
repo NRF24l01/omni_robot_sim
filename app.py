@@ -14,7 +14,7 @@ from modules.pointer import Pointer
 from modules.listbox import CtkHoverSelectListbox
 from modules.confirm_window import ConfirmationWindow
 
-from config import key_binds_txt
+from config import key_binds_txt, APP_STATES
 
 from logger import Logger
 
@@ -136,6 +136,12 @@ class App(ctk.CTk):
             self.current_dot = None
             self.pointer.change_state(1)
             self.path.deunderline_point()
+        elif event.keysym == "m" and (self.current_dot is not None and self.current_dot < len(self.path.path)):
+            # Move dot
+            self.status = 3
+            self.pointer.change_state(4)
+
+
         self.static_update()
 
     def reset(self):
@@ -157,12 +163,7 @@ class App(ctk.CTk):
             self.path.path.pop(self.current_dot)
 
     def static_update(self):
-        if self.status == 0:
-            self.mode_label.configure(text="Режим: ничего")
-        if self.status == 1:
-            self.mode_label.configure(text="Режим: установка стартовой точки")
-        if self.status == 2:
-            self.mode_label.configure(text="Режим: установка путевой точки")
+        self.mode_label.configure(text=APP_STATES[self.status])
 
     def on_move(self, event):
         self.pointer.update(event.x, event.y)
