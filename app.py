@@ -133,10 +133,16 @@ class App(ctk.CTk):
             self.path.deunderline_point()
         self.static_update()
 
+    def reset(self):
+        self.status = 0
+        self.current_dot = None
+        self.pointer.change_state(1)
+        self.path.deunderline_point()
+
     def delite_dot(self):
         if not self.current_dot or self.current_dot >= len(self.path.path):
             self.logger.warning("No dot selected")
-            self.current_dot = None
+            self.reset()
             return
         confirm_window = ConfirmationWindow(self, title="Потвердите удаление.",
                                             message="Вы уверены, что хотите удалить точку?")
