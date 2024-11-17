@@ -75,8 +75,13 @@ class App(ctk.CTk):
         self.bind('n', self.on_button_click)  # Add new path point
 
         # Binds for changing path
-        self.bind('d', self.on_button_click)  # Delite dot
+        # Delite binds
+        self.bind('d', self.on_button_click)
+        self.bind('<Delete>', self.on_button_click)
+        self.bind('<BackSpace>', self.on_button_click)
+
         self.bind('m', self.on_button_click)  # Move dots
+
 
         self.bind("<Escape>", self.on_button_click)
         self.dotbox.bind("<<ListboxSelect>>", self.dot_selected)
@@ -122,7 +127,7 @@ class App(ctk.CTk):
             # Add new point
             self.status = 2
             self.pointer.change_state(3)
-        elif event.keysym == "d":
+        elif event.keysym in ["d", "BackSpace", "Delete"]:
             # Change start point
             self.delite_dot()
         elif event.keysym == "Escape":
@@ -140,7 +145,8 @@ class App(ctk.CTk):
         self.path.deunderline_point()
 
     def delite_dot(self):
-        if not self.current_dot or self.current_dot >= len(self.path.path):
+        print(self.current_dot)
+        if self.current_dot != 0 and (not self.current_dot or self.current_dot >= len(self.path.path)):
             self.logger.warning("No dot selected")
             self.reset()
             return
