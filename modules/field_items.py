@@ -11,7 +11,6 @@ from logger import Logger
 if not os.path.exists(CACHE_DIR):
     os.makedirs(CACHE_DIR)
 
-
 class Item:
     def __init__(self, logger: Logger):
         self.logger = logger

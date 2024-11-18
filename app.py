@@ -22,8 +22,11 @@ st_time = time() - st_time
 
 # Dear reader, dot = pathpoint
 
+
 class App(ctk.CTk):
-    def __init__(self, logger: Logger, background="static/images/field.png", xsize=960, ysize=640):
+    def __init__(
+        self, logger: Logger, background="static/images/field.png", xsize=960, ysize=640
+    ):
         app_init_time = time()
         super().__init__()
         self.logger = logger
@@ -67,31 +70,30 @@ class App(ctk.CTk):
         self.logger.info("Items inited")
 
         # Binds
-        self.canvas.bind('<Motion>', self.on_move)
+        self.canvas.bind("<Motion>", self.on_move)
         self.canvas.bind("<Button-1>", self.on_left_mouse)
 
         # Bind path adding
-        self.bind('s', self.on_button_click)  # Add start button
-        self.bind('n', self.on_button_click)  # Add new path point
+        self.bind("s", self.on_button_click)  # Add start button
+        self.bind("n", self.on_button_click)  # Add new path point
 
         # Binds for changing path
         # Delite binds
-        self.bind('d', self.on_button_click)
-        self.bind('<Delete>', self.on_button_click)
-        self.bind('<BackSpace>', self.on_button_click)
+        self.bind("d", self.on_button_click)
+        self.bind("<Delete>", self.on_button_click)
+        self.bind("<BackSpace>", self.on_button_click)
 
-        self.bind('m', self.on_button_click)  # Move dots
-
+        self.bind("m", self.on_button_click)  # Move dots
 
         self.bind("<Escape>", self.on_button_click)
         self.dotbox.bind("<<ListboxSelect>>", self.dot_selected)
         self.logger.info("Binded!")
 
-        app_init_time = time()-app_init_time
+        app_init_time = time() - app_init_time
 
         self.logger.info("Modules imported by", st_time)
         self.logger.info("App inited by", app_init_time)
-        self.logger.info("Total running time:", st_time+app_init_time)
+        self.logger.info("Total running time:", st_time + app_init_time)
 
         self.update()
 
@@ -109,8 +111,8 @@ class App(ctk.CTk):
         self.bg.draw(self.canvas)
 
         # Draw non static
-        self.pointer.draw(self.canvas)
         self.path.draw(self.canvas)
+        self.pointer.draw(self.canvas)
 
         self.after(1, self.update)
 
@@ -119,6 +121,8 @@ class App(ctk.CTk):
         self.path.underline_point(self.current_dot)
 
     def on_button_click(self, event):
+        self.status = 0
+        self.pointer.change_state(1)
         if event.keysym == "s":
             # Change start point
             self.status = 1
@@ -132,15 +136,13 @@ class App(ctk.CTk):
             self.delite_dot()
         elif event.keysym == "Escape":
             # Escape :)
-            self.status = 0
-            self.current_dot = None
-            self.pointer.change_state(1)
-            self.path.deunderline_point()
-        elif event.keysym == "m" and (self.current_dot is not None and self.current_dot < len(self.path.path)):
+            self.reset()
+        elif event.keysym == "m" and (
+            self.current_dot is not None and self.current_dot < len(self.path.path)
+        ):
             # Move dot
             self.status = 3
             self.pointer.change_state(4)
-
 
         self.static_update()
 
@@ -152,12 +154,17 @@ class App(ctk.CTk):
 
     def delite_dot(self):
         print(self.current_dot)
-        if self.current_dot != 0 and (not self.current_dot or self.current_dot >= len(self.path.path)):
+        if self.current_dot != 0 and (
+            not self.current_dot or self.current_dot >= len(self.path.path)
+        ):
             self.logger.warning("No dot selected")
             self.reset()
             return
-        confirm_window = ConfirmationWindow(self, title="Потвердите удаление.",
-                                            message="Вы уверены, что хотите удалить точку?")
+        confirm_window = ConfirmationWindow(
+            self,
+            title="Потвердите удаление.",
+            message="Вы уверены, что хотите удалить точку?",
+        )
         self.wait_window(confirm_window)
         if confirm_window.result:
             self.path.path.pop(self.current_dot)
@@ -167,12 +174,18 @@ class App(ctk.CTk):
 
     def on_move(self, event):
         self.pointer.update(event.x, event.y)
+        
+        # Processing dot moving
+        if self.status == 3:
+            self.path.path[self.current_dot] = [event.x, event.y]
 
     def on_left_mouse(self, event):
         if self.status == 1:
             self.path.set_start_point(event.x, event.y)
         elif self.status == 2:
             self.path.add_point(event.x, event.y)
+        elif self.status == 3:
+            self.reset()
 
 
 if __name__ == "__main__":
