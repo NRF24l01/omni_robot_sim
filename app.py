@@ -153,7 +153,6 @@ class App(ctk.CTk):
         self.path.deunderline_point()
 
     def delite_dot(self):
-        print(self.current_dot)
         if self.current_dot != 0 and (
             not self.current_dot or self.current_dot >= len(self.path.path)
         ):
@@ -167,6 +166,7 @@ class App(ctk.CTk):
         )
         self.wait_window(confirm_window)
         if confirm_window.result:
+            self.logger.info("Delited dot", self.current_dot)
             self.path.path.pop(self.current_dot)
 
     def static_update(self):
@@ -174,17 +174,18 @@ class App(ctk.CTk):
 
     def on_move(self, event):
         self.pointer.update(event.x, event.y)
-        
-        # Processing dot moving
-        if self.status == 3:
+        if self.status == 3: # Processing dot moving
             self.path.path[self.current_dot] = [event.x, event.y]
 
     def on_left_mouse(self, event):
         if self.status == 1:
+            self.logger.info("Setted start point to", (event.x, event.y))
             self.path.set_start_point(event.x, event.y)
         elif self.status == 2:
+            self.logger.info("Added dot to", (event.x, event.y))
             self.path.add_point(event.x, event.y)
         elif self.status == 3:
+            self.logger.info("Moved dot", self.current_dot)
             self.reset()
 
 

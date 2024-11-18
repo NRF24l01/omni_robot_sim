@@ -6,10 +6,10 @@ m - move point(work only when point selected)
 """
 
 APP_STATES = {
-    0: "Режим: ничего",
-    1: "Режим: установка стартовой точки",
-    2: "Режим: установка путевой точки",
-    3: "Режим: изменение точки пути"
+    0: "Mode: Chilll",
+    1: "Mode: set start point",
+    2: "Mode: set path point",
+    3: "Mode: change path point"
 }
 
 CACHE_DIR = "static/cached"
