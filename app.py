@@ -14,6 +14,8 @@ from modules.field_items import Background, Path
 from modules.pointer import Pointer
 from modules.listbox import CtkHoverSelectListbox
 from modules.confirm_window import ConfirmationWindow
+from modules.converter import Converter
+from modules.opath_converter import OPath_converter
 
 from config import key_binds_txt, APP_STATES
 
@@ -70,7 +72,9 @@ class App(ctk.CTk):
 
         # Robot path
         self.opath_frame = ctk.CTkFrame(self.right_frame)
-        self.save_opath_button = ctk.CTkButton(self.opath_frame, text="Сохранить opath")
+        self.save_opath_button = ctk.CTkButton(
+            self.opath_frame, text="Сохранить opath", command=self.export_robot_path
+        )
         self.open_opath_button = ctk.CTkButton(self.opath_frame, text="Открыть opath")
         self.opath_frame.grid(row=4, column=0, pady=(3, 0), padx=10, sticky="n")
         self.save_opath_button.grid(row=0, column=0, pady=2, padx=2)
@@ -89,6 +93,7 @@ class App(ctk.CTk):
         self.pointer = Pointer()
         self.path = Path()
         self.logger.info("Items inited")
+        self.converter = Converter((xsize, ysize), (3000, 2000))
 
         # Binds
         self.canvas.bind("<Motion>", self.on_move)
@@ -230,7 +235,7 @@ class App(ctk.CTk):
             }
             file.write(dumps(file_content))
             file.close()
-            self.logger.info("Saved path to", file.name+",", "by", time() - t)
+            self.logger.info("Saved path to", file.name + ",", "by", time() - t)
         else:
             self.logger.warning("No path selected")
 
@@ -255,14 +260,40 @@ class App(ctk.CTk):
         if file:
             self.logger.info("Start opening file", file.name)
             t = time()
-            
+
             content = loads(file.read())
             self.path.start_point = content["start_point"]
             self.path.path = content["path"]
-    
+
             self.logger.info("File opened by", round(time() - t, 4))
         else:
             self.logger.warning("No file selected")
+
+    def export_robot_path(self):
+        self.logger.info("Stated exporting")
+        if len(self.path.path) == 0:
+            self.logger.warning("No path, we can`t export")
+            return
+        
+        t = time()
+        pathmm = self.converter.list_pxs_to_mms(self.path.path)
+        startpoint_mm = self.converter.pxs_to_mms(self.path.start_point)
+        opath = OPath_converter.export(pathmm, startpoint_mm)
+        self.logger.info("Exported to opath by", time()-t)
+        
+        self.logger.info("Asking filename")
+        file = filedialog.asksaveasfile(
+            title="Save opath As",
+            defaultextension=".opth",  # Default file extension
+            filetypes=[("omni bot path file", ("*.opth")), ("All Files", "*.*")],
+        )
+        if file:
+            file.write(dumps(opath))
+            file.close()
+            self.logger.info("Omni path saved to", file.name)
+        else:
+            self.logger.info("No path selected")
+
 
 
 if __name__ == "__main__":
