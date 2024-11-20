@@ -30,7 +30,7 @@ def check_rotation(steps):
         print("no rotations")
         rotation_steps = 0
 
-    print("steps:",steps)
+    #print("steps:",steps)
     return [steps, rotation_steps]
 def vector_to_coords(vector):
     x = round(vector[0] * math.cos(math.radians(vector[1])))
