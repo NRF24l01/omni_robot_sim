@@ -45,15 +45,31 @@ class App(ctk.CTk):
         self.right_frame.grid(row=0, column=1, padx=10, pady=10, sticky="n")
 
         self.dotbox = CtkHoverSelectListbox(self.right_frame)
-        self.dotbox.grid(row=2, column=0, pady=(10, 0), sticky="n")
+        self.dotbox.grid(row=2, column=0, pady=(10, 0), padx=10, sticky="n")
 
         # Create mode lable
         self.mode_label = ctk.CTkLabel(self.right_frame, text="Режим: ничего")
-        self.mode_label.grid(row=0, column=0, pady=(10, 0), sticky="n")
+        self.mode_label.grid(row=0, column=0, pady=(10, 0), padx=10, sticky="n")
 
         # Create keybind map
         self.keybinds_map = ctk.CTkLabel(self.right_frame, text=key_binds_txt)
-        self.keybinds_map.grid(row=1, column=0, pady=(10, 0), sticky="n")
+        self.keybinds_map.grid(row=1, column=0, pady=(10, 0), padx=10, sticky="n")
+
+        # Save/open buttons
+        self.opn_sv_frame = ctk.CTkFrame(self.right_frame)
+        self.save_button = ctk.CTkButton(self.opn_sv_frame, text="Сохранить путь")
+        self.open_button = ctk.CTkButton(self.opn_sv_frame, text="Открыть путь")
+        self.opn_sv_frame.grid(row=3, column=0, pady=(10, 0), padx=10, sticky="n")
+        self.save_button.grid(row=0, column=0, pady=2, padx=2)
+        self.open_button.grid(row=0, column=1, pady=2, padx=2)
+        
+        # Robot path
+        self.opath_frame = ctk.CTkFrame(self.right_frame)
+        self.save_opath_button = ctk.CTkButton(self.opath_frame, text="Сохранить opath")
+        self.open_opath_button = ctk.CTkButton(self.opath_frame, text="Открыть opath")
+        self.opath_frame.grid(row=4, column=0, pady=(3, 0), padx=10, sticky="n")
+        self.save_opath_button.grid(row=0, column=0, pady=2, padx=2)
+        self.open_opath_button.grid(row=0, column=1, pady=2, padx=2)
 
         self.logger.info("Added elements")
 
@@ -174,7 +190,7 @@ class App(ctk.CTk):
 
     def on_move(self, event):
         self.pointer.update(event.x, event.y)
-        if self.status == 3: # Processing dot moving
+        if self.status == 3:  # Processing dot moving
             self.path.path[self.current_dot] = [event.x, event.y]
 
     def on_left_mouse(self, event):
