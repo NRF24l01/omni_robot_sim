@@ -3,11 +3,12 @@ from time import time
 st_time = time()
 
 import customtkinter as ctk
+from customtkinter import filedialog
 import tkinter as tk
 
 from PIL import Image, ImageTk
 import math
-from json import dumps
+from json import dumps, loads
 
 from modules.field_items import Background, Path
 from modules.pointer import Pointer
@@ -57,12 +58,14 @@ class App(ctk.CTk):
 
         # Save/open buttons
         self.opn_sv_frame = ctk.CTkFrame(self.right_frame)
-        self.save_button = ctk.CTkButton(self.opn_sv_frame, text="Сохранить путь")
+        self.save_button = ctk.CTkButton(
+            self.opn_sv_frame, text="Сохранить путь", command=self.save_path
+        )
         self.open_button = ctk.CTkButton(self.opn_sv_frame, text="Открыть путь")
         self.opn_sv_frame.grid(row=3, column=0, pady=(10, 0), padx=10, sticky="n")
         self.save_button.grid(row=0, column=0, pady=2, padx=2)
         self.open_button.grid(row=0, column=1, pady=2, padx=2)
-        
+
         # Robot path
         self.opath_frame = ctk.CTkFrame(self.right_frame)
         self.save_opath_button = ctk.CTkButton(self.opath_frame, text="Сохранить opath")
@@ -203,6 +206,30 @@ class App(ctk.CTk):
         elif self.status == 3:
             self.logger.info("Moved dot", self.current_dot)
             self.reset()
+
+    def save_path(self):
+        self.logger.info("User asked to save path")
+        if len(self.path.path) == 0:
+            self.logger.warning("No path, canseling")
+            return
+        file = filedialog.asksaveasfile(
+            title="Save As",
+            defaultextension=".path",  # Default file extension
+            filetypes=[("path file", ("*.path", ".pth")), ("All Files", "*.*")],
+        )
+        if file:
+            self.logger.info("Started saving to", file.name)
+            file_content = {
+                "format": "json-1",
+                "create_time": time(),
+                "start_point": self.path.start_point,
+                "path": self.path.path
+            }
+            file.write(dumps(file_content))
+            file.close()
+            self.logger.info("Saved path to", file.name)
+        else:
+            self.logger.warning("No path selected")
 
 
 if __name__ == "__main__":
