@@ -3,7 +3,7 @@ import customtkinter as ctk
 
 # Класс для окна подтверждения
 class ConfirmationWindow(ctk.CTkToplevel):
-    def __init__(self, master, title="Подтверждение", message="Вы уверены?"):
+    def __init__(self, master, title="Подтверждение", message="Вы уверены?", buttons=("Да", "Нет")):
         super().__init__(master)
         self.title(title)
         self.resizable(False, False)
@@ -17,9 +17,9 @@ class ConfirmationWindow(ctk.CTkToplevel):
         self.button_frame = ctk.CTkFrame(self)
         self.button_frame.pack(pady=10)
 
-        self.yes_button = ctk.CTkButton(self.button_frame, text="Да", command=self.on_yes)
+        self.yes_button = ctk.CTkButton(self.button_frame, text=buttons[0], command=self.on_yes)
         self.yes_button.grid(row=0, column=0, padx=10)
-        self.no_button = ctk.CTkButton(self.button_frame, text="Нет", command=self.on_no)
+        self.no_button = ctk.CTkButton(self.button_frame, text=buttons[1], command=self.on_no)
         self.no_button.grid(row=0, column=1, padx=10)
 
         self.after(10, self.grab_set)
