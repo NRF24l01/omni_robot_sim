@@ -4,10 +4,7 @@ st_time = time()
 
 import customtkinter as ctk
 from customtkinter import filedialog
-import tkinter as tk
 
-from PIL import Image, ImageTk
-import math
 from json import dumps, loads
 
 from modules.field_items import Background, Path
