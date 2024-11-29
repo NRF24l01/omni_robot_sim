@@ -10,7 +10,7 @@ from json import dumps, loads
 from modules.field_items import Background, Path
 from modules.pointer import Pointer
 from modules.listbox import CtkHoverSelectListbox
-from modules.confirm_window import ConfirmationWindow
+from modules.windows import ConfirmationWindow
 from modules.converter import Converter
 from modules.opath_converter import OPath_converter
 
@@ -69,13 +69,9 @@ class App(ctk.CTk):
 
         # Robot path
         self.opath_frame = ctk.CTkFrame(self.right_frame)
-        self.save_opath_button = ctk.CTkButton(
-            self.opath_frame, text="Сохранить opath", command=self.export_robot_path
-        )
-        self.open_opath_button = ctk.CTkButton(self.opath_frame, text="Открыть opath")
+        self.send_path_button = ctk.CTkButton(self.opath_frame, text="Загрузить путь")
         self.opath_frame.grid(row=4, column=0, pady=(3, 0), padx=10, sticky="n")
-        self.save_opath_button.grid(row=0, column=0, pady=2, padx=2)
-        self.open_opath_button.grid(row=0, column=1, pady=2, padx=2)
+        self.send_path_button.grid(row=0, column=0, pady=2, padx=2)
 
         self.logger.info("Added elements")
 

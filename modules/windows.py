@@ -33,6 +33,40 @@ class ConfirmationWindow(ctk.CTkToplevel):
         self.destroy()
 
 
+class Send_window(ctk.CTkToplevel):
+    def __init__(self, master: ctk.CTk):
+        super().__init__(master)
+        self.title("Upload path")
+        self.resizable(False, False)
+        
+        self.result = None
+        
+        self.main_grid = ctk.CTkFrame(self)
+        self.main_grid.pack(padx=20)
+        
+        self.label = ctk.CTkLabel(self.main_grid, text="Upload path")
+        self.label.grid(row=0, column=0)
+        
+        self.input_grid = ctk.CTkFrame(self.main_grid)
+        self.input_grid.grid(row=1, column=0)
+        
+        self.ip_input = ctk.CTkEntry(self.input_grid)
+        self.ip_input.grid(row=0, column=1, padx=(5, 10), pady=5)
+        self.ip_input_name = ctk.CTkLabel(self.input_grid, text="Enter ip:port")
+        self.ip_input_name.grid(row=0, column=0, padx=(10, 5), pady=5)
+        
+        self.filename_input = ctk.CTkEntry(self.input_grid)
+        self.filename_input.grid(row=1, column=1, padx=(5, 10), pady=5)
+        self.filename_input_name = ctk.CTkLabel(self.input_grid, text="Enter path name")
+        self.filename_input_name.grid(row=1, column=0, padx=(10, 5), pady=5)
+        
+        self.confirm_button = ctk.CTkButton(self.main_grid, text="Загрузить")
+        
+        self.after(10, self.grab_set)
+
+    def confirm_pressed(self, event):
+        self.result = {"ip": self.ip_input.get(), "filename": self.filename_input.get()}
+        
 if __name__ == "__main__":
     class App(ctk.CTk):
         def __init__(self):
@@ -44,7 +78,7 @@ if __name__ == "__main__":
             self.confirm_button.pack(pady=50)
 
         def open_confirmation(self):
-            confirm_window = ConfirmationWindow(self, title="Вопрос", message="Вы уверены, что хотите продолжить?")
+            confirm_window = Send_window(self)
             self.wait_window(confirm_window)
             print("Ответ:", confirm_window.result)
 
