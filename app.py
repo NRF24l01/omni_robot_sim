@@ -10,9 +10,8 @@ from json import dumps, loads
 from modules.field_items import Background, Path
 from modules.pointer import Pointer
 from modules.listbox import CtkHoverSelectListbox
-from modules.windows import ConfirmationWindow
+from modules.windows import ConfirmationWindow, Send_window
 from modules.converter import Converter
-from modules.opath_converter import OPath_converter
 
 from config import key_binds_txt, APP_STATES
 
@@ -261,31 +260,9 @@ class App(ctk.CTk):
             self.logger.info("File opened by", round(time() - t, 4))
         else:
             self.logger.warning("No file selected")
-
-    def export_robot_path(self):
-        self.logger.info("Stated exporting")
-        if len(self.path.path) == 0:
-            self.logger.warning("No path, we can`t export")
-            return
-        
-        t = time()
-        pathmm = self.converter.list_pxs_to_mms(self.path.path)
-        startpoint_mm = self.converter.pxs_to_mms(self.path.start_point)
-        opath = OPath_converter.export(pathmm, startpoint_mm)
-        self.logger.info("Exported to opath by", time()-t)
-        
-        self.logger.info("Asking filename")
-        file = filedialog.asksaveasfile(
-            title="Save opath As",
-            defaultextension=".opth",  # Default file extension
-            filetypes=[("omni bot path file", ("*.opth")), ("All Files", "*.*")],
-        )
-        if file:
-            file.write(dumps(opath))
-            file.close()
-            self.logger.info("Omni path saved to", file.name)
-        else:
-            self.logger.info("No path selected")
+    
+    def upload_path(self):
+        raise NotImplementedError
 
 
 
