@@ -29,4 +29,8 @@ class Converter:
         for mms in mmsl:
             px.append(self.mms_to_pxs(mms))
         return px
-    
+
+
+if __name__ == "__main__":
+    c = Converter((100, 2), (2, 4))
+    print(c.mms_to_pxs(c.pxs_to_mms((100, 100))))
