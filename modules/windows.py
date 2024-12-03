@@ -50,22 +50,38 @@ class Send_window(ctk.CTkToplevel):
         self.input_grid = ctk.CTkFrame(self.main_grid)
         self.input_grid.grid(row=1, column=0)
         
-        self.ip_input = ctk.CTkEntry(self.input_grid)
-        self.ip_input.grid(row=0, column=1, padx=(5, 10), pady=5)
         self.ip_input_name = ctk.CTkLabel(self.input_grid, text="Enter ip:port")
         self.ip_input_name.grid(row=0, column=0, padx=(10, 5), pady=5)
+        self.ip_input = ctk.CTkEntry(self.input_grid)
+        self.ip_input.grid(row=0, column=1, padx=(5, 5), pady=5)
+        self.ip_input_error = ctk.CTkLabel(self.input_grid, text="", text_color="#ff0000")
+        self.ip_input_error.grid(row=0, column=2, padx=(5, 10), pady=5)
         
-        self.filename_input = ctk.CTkEntry(self.input_grid)
-        self.filename_input.grid(row=1, column=1, padx=(5, 10), pady=5)
         self.filename_input_name = ctk.CTkLabel(self.input_grid, text="Enter path name")
         self.filename_input_name.grid(row=1, column=0, padx=(10, 5), pady=5)
+        self.filename_input = ctk.CTkEntry(self.input_grid)
+        self.filename_input.grid(row=1, column=1, padx=(5, 5), pady=5)
+        self.filename_input_error = ctk.CTkLabel(self.input_grid, text="", text_color="#ff0000")
+        self.filename_input_error.grid(row=1, column=2, padx=(5, 10), pady=5)
         
-        self.confirm_button = ctk.CTkButton(self.main_grid, text="Загрузить")
+        self.confirm_button = ctk.CTkButton(self.main_grid, text="Загрузить", command=self.confirm_pressed)
+        self.confirm_button.grid(row=2, column=0, padx=10, pady=5)
         
         self.after(10, self.grab_set)
 
-    def confirm_pressed(self, event):
+    def confirm_pressed(self):
+        if self.ip_input.get() == "":
+            self.ip_input_error.configure(text="Введите ip")
+            return
+        else:
+            self.ip_input_error.configure(text="")
+        if self.filename_input.get() == "":
+            self.filename_input_error.configure(text="Введите имя файла")
+            return
+        else:
+            self.filename_input_error.configure(text="")
         self.result = {"ip": self.ip_input.get(), "filename": self.filename_input.get()}
+        self.destroy()
         
 if __name__ == "__main__":
     class App(ctk.CTk):
@@ -73,6 +89,7 @@ if __name__ == "__main__":
             super().__init__()
             self.geometry("400x200")
             self.title("Пример Confirm Toplevel")
+            self.resizable(False, False)
 
             self.confirm_button = ctk.CTkButton(self, text="Открыть подтверждение", command=self.open_confirmation)
             self.confirm_button.pack(pady=50)
