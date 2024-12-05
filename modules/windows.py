@@ -1,5 +1,6 @@
 from customtkinter import CTkToplevel
 import customtkinter as ctk
+from requests import get, exceptions, post
 
 # Класс для окна подтверждения
 class ConfirmationWindow(ctk.CTkToplevel):
@@ -34,10 +35,12 @@ class ConfirmationWindow(ctk.CTkToplevel):
 
 
 class Send_window(ctk.CTkToplevel):
-    def __init__(self, master: ctk.CTk):
+    def __init__(self, master: ctk.CTk, path: dict):
         super().__init__(master)
         self.title("Upload path")
         self.resizable(False, False)
+        
+        self.path = path
         
         self.result = None
         
@@ -68,6 +71,14 @@ class Send_window(ctk.CTkToplevel):
         self.confirm_button.grid(row=2, column=0, padx=10, pady=5)
         
         self.after(10, self.grab_set)
+    
+    def upload(self, name: str) -> bool:
+        body = {}
+        body["path"] = self.path
+        body["name"] = name
+        
+        rq = post("http://"+self.ip_input.get()+"/api/add_path", data=body)
+        return rq.status_code == 200
 
     def confirm_pressed(self):
         if self.ip_input.get() == "":
@@ -80,7 +91,32 @@ class Send_window(ctk.CTkToplevel):
             return
         else:
             self.filename_input_error.configure(text="")
-        self.result = {"ip": self.ip_input.get(), "filename": self.filename_input.get()}
+        
+        self.ip_input_error.configure(text="Проверка сервера") 
+        
+        try:
+            rq = get("http://"+self.ip_input.get()+"/api/get_ok")
+            if rq.status_code != 200:
+                self.ip_input_error.configure(text="Cервер не отвечает")
+                return
+        except exceptions.ConnectionError:
+            self.ip_input_error.configure(text="Cервер не доступен")
+            return
+        
+        check_filename = post("http://"+self.ip_input.get()+"/api/is_filename_exists", data={"filename": self.filename_input.get()})
+        if check_filename.status_code != 200:
+            self.ip_input_error.configure(text="Сервер вернул "+str(check_filename.status_code)+" вместо 200.")
+            return
+        
+        is_dublicate = check_filename.json()["answer"]
+        print(check_filename.json())
+        if is_dublicate:
+            ask_replace_window = ConfirmationWindow(self, message="Такой путь уже существует. Вы хотите заменить путь?")
+            self.wait_window(ask_replace_window)
+            if not ask_replace_window.result:
+                self.destroy()
+                return
+        self.result = self.upload(self.filename_input.get())
         self.destroy()
         
 if __name__ == "__main__":
@@ -95,7 +131,7 @@ if __name__ == "__main__":
             self.confirm_button.pack(pady=50)
 
         def open_confirmation(self):
-            confirm_window = Send_window(self)
+            confirm_window = Send_window(self, {"format": "json-1", "create_time": 1733237695.173922, "start_point": [432, 311], "path": [[681, 304], [651, 148], [289, 155], [304, 370]]})
             self.wait_window(confirm_window)
             print("Ответ:", confirm_window.result)
 
