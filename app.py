@@ -197,11 +197,15 @@ class App(ctk.CTk):
 
     def on_left_mouse(self, event):
         if self.status == 1:
-            self.logger.info("Setted start point to", (event.x, event.y))
-            self.path.set_start_point(event.x, event.y)
+            dot_x = max(0, min(3000, event.x))
+            dot_y = max(0, min(2000, event.y))
+            self.logger.info("Setted start point to", (dot_x, dot_y))
+            self.path.set_start_point(dot_x, dot_y)
         elif self.status == 2:
-            self.logger.info("Added dot to", (event.x, event.y))
-            self.path.add_point(event.x, event.y)
+            dot_x = max(0, min(3000, event.x))
+            dot_y = max(0, min(2000, event.y))
+            self.logger.info("Added dot to", (dot_x, dot_y))
+            self.path.add_point(dot_x, dot_y)
         elif self.status == 3:
             self.logger.info("Moved dot", self.current_dot)
             self.reset()

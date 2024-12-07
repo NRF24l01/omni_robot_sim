@@ -103,7 +103,7 @@ class Path(Dot):
             self.draw_dot(canvas, self.start_point[0], self.start_point[1])
             px, py = self.start_point[0], self.start_point[1]
             for id, dot in enumerate(self.path):
-                canvas.create_line(px, py, dot[0], dot[1], fill="#ffffff")
+                canvas.create_line(px, py, dot[0], dot[1], fill="#eeeeee", width=2)
                 px, py = dot[0], dot[1]
                 if id == self.editing_point:
                     self.draw_dot(canvas, dot[0], dot[1], fcolor="#4287f5")
