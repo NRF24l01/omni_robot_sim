@@ -1,6 +1,7 @@
 from customtkinter import CTkToplevel
 import customtkinter as ctk
 from requests import get, exceptions, post
+from json import dumps
 
 # Класс для окна подтверждения
 class ConfirmationWindow(ctk.CTkToplevel):
@@ -74,7 +75,7 @@ class Upload_window(ctk.CTkToplevel):
     
     def upload(self, name: str) -> bool:
         body = {}
-        body["path"] = self.path
+        body["path"] = dumps(self.path)
         body["name"] = name
         
         rq = post("http://"+self.ip_input.get()+"/api/add_path", data=body)
