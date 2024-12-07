@@ -262,7 +262,13 @@ class App(ctk.CTk):
             self.logger.warning("No file selected")
     
     def upload_path(self):
-        upload_window = Upload_window(self, self.path.path)
+        file_content = {
+            "format": "json-1",
+            "create_time": time(),
+            "start_point": self.path.start_point,
+            "path": self.path.path,
+        }
+        upload_window = Upload_window(master=self, path=file_content)
         self.wait_window(upload_window)
 
 if __name__ == "__main__":

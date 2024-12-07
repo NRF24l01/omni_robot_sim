@@ -109,7 +109,6 @@ class Upload_window(ctk.CTkToplevel):
             return
         
         is_dublicate = check_filename.json()["answer"]
-        print(check_filename.json())
         if is_dublicate:
             ask_replace_window = ConfirmationWindow(self, message="Такой путь уже существует. Вы хотите заменить путь?")
             self.wait_window(ask_replace_window)
@@ -133,7 +132,6 @@ if __name__ == "__main__":
         def open_confirmation(self):
             confirm_window = Upload_window(self, {"format": "json-1", "create_time": 1733237695.173922, "start_point": [432, 311], "path": [[681, 304], [651, 148], [289, 155], [304, 370]]})
             self.wait_window(confirm_window)
-            print("Ответ:", confirm_window.result)
 
 
     app = App()
