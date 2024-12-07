@@ -34,7 +34,7 @@ class ConfirmationWindow(ctk.CTkToplevel):
         self.destroy()
 
 
-class Send_window(ctk.CTkToplevel):
+class Upload_window(ctk.CTkToplevel):
     def __init__(self, master: ctk.CTk, path: dict):
         super().__init__(master)
         self.title("Upload path")
@@ -131,7 +131,7 @@ if __name__ == "__main__":
             self.confirm_button.pack(pady=50)
 
         def open_confirmation(self):
-            confirm_window = Send_window(self, {"format": "json-1", "create_time": 1733237695.173922, "start_point": [432, 311], "path": [[681, 304], [651, 148], [289, 155], [304, 370]]})
+            confirm_window = Upload_window(self, {"format": "json-1", "create_time": 1733237695.173922, "start_point": [432, 311], "path": [[681, 304], [651, 148], [289, 155], [304, 370]]})
             self.wait_window(confirm_window)
             print("Ответ:", confirm_window.result)
 

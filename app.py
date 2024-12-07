@@ -10,7 +10,7 @@ from json import dumps, loads
 from modules.field_items import Background, Path
 from modules.pointer import Pointer
 from modules.listbox import CtkHoverSelectListbox
-from modules.windows import ConfirmationWindow, Send_window
+from modules.windows import ConfirmationWindow, Upload_window
 from modules.converter import Converter
 
 from config import key_binds_txt, APP_STATES
@@ -68,7 +68,7 @@ class App(ctk.CTk):
 
         # Robot path
         self.opath_frame = ctk.CTkFrame(self.right_frame)
-        self.send_path_button = ctk.CTkButton(self.opath_frame, text="Загрузить путь")
+        self.send_path_button = ctk.CTkButton(self.opath_frame, text="Загрузить путь", command=self.upload_path)
         self.opath_frame.grid(row=4, column=0, pady=(3, 0), padx=10, sticky="n")
         self.send_path_button.grid(row=0, column=0, pady=2, padx=2)
 
@@ -262,9 +262,8 @@ class App(ctk.CTk):
             self.logger.warning("No file selected")
     
     def upload_path(self):
-        raise NotImplementedError
-
-
+        upload_window = Upload_window(self, self.path.path)
+        self.wait_window(upload_window)
 
 if __name__ == "__main__":
     logger = Logger()
