@@ -3,8 +3,8 @@ class Converter:
         self.pxx, self.pxy = pxs
         self.mmx, self.mmy = mms
         
-        self.coefx = self.pxx / self.mmx
-        self.coefy = self.pxy / self.mmy
+        self.coefx = self.pxx / self.mmx * 10
+        self.coefy = self.pxy / self.mmy * 10
     
     def pxs_to_mms(self, pxs: tuple[int]|list[int]) -> list[int]:
         px, py = pxs

@@ -37,7 +37,7 @@ class App(ctk.CTk):
 
         # Create canvas
         self.canvas = ctk.CTkCanvas(self, width=xsize, height=ysize, bg="white")
-        self.canvas.grid(row=0, column=0)
+        self.canvas.grid(row=0, column=0, padx=5, pady=10)
 
         # Create right frame
         self.right_frame = ctk.CTkFrame(self)
@@ -118,7 +118,7 @@ class App(ctk.CTk):
     def update(self):
         # Update dots list
         dots_txt = []
-        for index, dot in enumerate(self.path.path):
+        for index, dot in enumerate(self.converter.list_pxs_to_mms(self.path.path)):
             dots_txt.append(f"{index}: {dumps(dot)}")
         self.dotbox.sync_with_data(dots_txt)
 
@@ -222,8 +222,8 @@ class App(ctk.CTk):
             file_content = {
                 "format": "json-1",
                 "create_time": time(),
-                "start_point": self.path.start_point,
-                "path": self.path.path,
+                "start_point": self.converter.pxs_to_mms(self.path.start_point),
+                "path": self.converter.list_pxs_to_mms(self.path.path),
             }
             file.write(dumps(file_content))
             file.close()
@@ -254,8 +254,8 @@ class App(ctk.CTk):
             t = time()
 
             content = loads(file.read())
-            self.path.start_point = content["start_point"]
-            self.path.path = content["path"]
+            self.path.start_point = self.converter.mms_to_pxs(content["start_point"])
+            self.path.path = self.converter.list_mms_to_pxs(content["path"])
 
             self.logger.info("File opened by", round(time() - t, 4))
         else:
@@ -265,8 +265,8 @@ class App(ctk.CTk):
         file_content = {
             "format": "json-1",
             "create_time": time(),
-            "start_point": self.path.start_point,
-            "path": self.path.path,
+            "start_point": self.converter.pxs_to_mms(self.path.start_point),
+            "path": self.converter.list_pxs_to_mms(self.path.path),
         }
         upload_window = Upload_window(master=self, path=file_content)
         self.wait_window(upload_window)
