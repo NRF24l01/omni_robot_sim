@@ -3,7 +3,21 @@ import customtkinter as ctk
 from requests import get, exceptions, post
 from json import dumps
 
-# Класс для окна подтверждения
+help_text = """
+Так короче, это типа справка по экшонам.
+
+Есть 2 типа экшонов:
+- Заготовленая команда
+- Команда питона
+
+ЗАГОТОВЛЕНАЯ КОМАНДА:
+Команды которые прописаны зарание, считай макросы
+
+КОМАНДА ПИТОНА:
+команда которая подставляется к классу робота.
+robot.{команда}
+"""
+
 class ConfirmationWindow(ctk.CTkToplevel):
     def __init__(self, master, title="Подтверждение", message="Вы уверены?", buttons=("Да", "Нет")):
         super().__init__(master)
@@ -34,8 +48,55 @@ class ConfirmationWindow(ctk.CTkToplevel):
         self.result = False
         self.destroy()
 
+class ActionHelpWindow(ctk.CTkToplevel):
+    def __init__(self, master, title="Помощ"):
+        super().__init__(master)
+        self.title(title)
+        self.resizable(False, False)
 
-class Upload_window(ctk.CTkToplevel):
+        self.result = None
+
+        self.label = ctk.CTkLabel(self, text=help_text, font=("Arial", 14))
+        self.label.pack(pady=20)
+
+        # Buttons container
+        self.button_frame = ctk.CTkFrame(self)
+        self.button_frame.pack(pady=10)
+
+        self.yes_button = ctk.CTkButton(self.button_frame, text="Ok", command=self.on_yes)
+        self.yes_button.grid(row=0, column=0, padx=10)
+
+        self.after(10, self.grab_set)
+
+    def on_yes(self):
+        self.result = True
+        self.destroy()
+
+class ActionAddWindow(ctk.CTkToplevel):
+    def __init__(self, master, title="Помощ"):
+        super().__init__(master)
+        self.title(title)
+        self.resizable(False, False)
+
+        self.result = None
+
+        self.label = ctk.CTkLabel(self, text="Nothing", font=("Arial", 14))
+        self.label.pack(pady=20)
+
+        # Buttons container
+        self.button_frame = ctk.CTkFrame(self)
+        self.button_frame.pack(pady=10)
+
+        self.yes_button = ctk.CTkButton(self.button_frame, text="Ok", command=self.on_yes)
+        self.yes_button.grid(row=0, column=0, padx=10)
+
+        self.after(10, self.grab_set)
+
+    def on_yes(self):
+        self.result = True
+        self.destroy()
+
+class UploadWindow(ctk.CTkToplevel):
     def __init__(self, master: ctk.CTk, path: dict):
         super().__init__(master)
         self.title("Upload path")

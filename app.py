@@ -1,5 +1,4 @@
 from time import time
-
 st_time = time()
 
 import customtkinter as ctk
@@ -10,7 +9,7 @@ from json import dumps, loads
 from modules.field_items import Background, Path
 from modules.pointer import Pointer
 from modules.listbox import CtkHoverSelectListbox
-from modules.windows import ConfirmationWindow, Upload_window
+from modules.windows import ConfirmationWindow, UploadWindow, ActionHelpWindow
 from modules.converter import Converter
 
 from config import key_binds_txt, APP_STATES
@@ -18,9 +17,6 @@ from config import key_binds_txt, APP_STATES
 from logger import Logger
 
 st_time = time() - st_time
-
-# Dear reader, dot = pathpoint
-
 
 class App(ctk.CTk):
     def __init__(
@@ -48,11 +44,11 @@ class App(ctk.CTk):
 
         # Create mode lable
         self.mode_label = ctk.CTkLabel(self.right_frame, text="Режим: ничего")
-        self.mode_label.grid(row=0, column=0, pady=(10, 0), padx=10, sticky="n")
+        self.mode_label.grid(row=0, column=0, pady=(5, 0), padx=10, sticky="n")
 
         # Create keybind map
         self.keybinds_map = ctk.CTkLabel(self.right_frame, text=key_binds_txt)
-        self.keybinds_map.grid(row=1, column=0, pady=(10, 0), padx=10, sticky="n")
+        self.keybinds_map.grid(row=1, column=0, pady=(5, 0), padx=10, sticky="n")
 
         # Save/open buttons
         self.opn_sv_frame = ctk.CTkFrame(self.right_frame)
@@ -72,6 +68,19 @@ class App(ctk.CTk):
         self.opath_frame.grid(row=4, column=0, pady=(3, 0), padx=10, sticky="n")
         self.send_path_button.grid(row=0, column=0, pady=2, padx=2)
 
+        # Actions panels
+        self.actions = ctk.CTkFrame(self.right_frame)
+        self.actions_buttons = ctk.CTkFrame(self.actions)
+        self.actions.grid(row=5, column=0, pady=(5, 0), padx=10, sticky="n")
+        self.actions_buttons.grid(row=0, column=0, pady=(5, 0), padx=1, sticky="n")
+        
+        self.action_help = ctk.CTkButton(self.actions_buttons, text="Help", command=self.actions_help)
+        self.action_add = ctk.CTkButton(self.actions_buttons, text="+", command=self.add_action, width=20)
+        self.actions_box = CtkHoverSelectListbox(self.actions)
+        self.action_help.grid(row=0, column=0, pady=(3, 0), padx=2, sticky="n")
+        self.action_add.grid(row=0, column=1, pady=(3, 0), padx=2, sticky="n")
+        self.actions_box.grid(row=1, column=0, pady=(3, 0), padx=3, sticky="n")
+        
         self.logger.info("Added elements")
 
         # Defines
@@ -114,7 +123,7 @@ class App(ctk.CTk):
         self.logger.info("Total running time:", st_time + app_init_time)
 
         self.update()
-
+    
     def update(self):
         # Update dots list
         dots_txt = []
@@ -272,9 +281,16 @@ class App(ctk.CTk):
             "start_point": self.converter.pxs_to_mms(self.path.start_point),
             "path": self.converter.list_pxs_to_mms(self.path.path),
         }
-        upload_window = Upload_window(master=self, path=file_content)
+        upload_window = UploadWindow(master=self, path=file_content)
         self.wait_window(upload_window)
 
+    def add_action(self):
+        raise NotImplementedError
+    
+    def actions_help(self):
+        help_window = ActionHelpWindow(master=self)
+        self.wait_window(help_window)
+    
 if __name__ == "__main__":
     logger = Logger()
     logger.info("Started loading")
