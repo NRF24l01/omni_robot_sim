@@ -58,9 +58,14 @@ class App(ctk.CTk):
         self.open_button = ctk.CTkButton(
             self.opn_sv_frame, text="Открыть путь", command=self.open_path
         )
+        self.orientation_selector = ctk.CTkComboBox(
+            self.opn_sv_frame, 
+            values=["0", "90", "180", "270"]
+        )
         self.opn_sv_frame.grid(row=3, column=0, pady=(10, 0), padx=10, sticky="n")
-        self.save_button.grid(row=0, column=0, pady=2, padx=2)
-        self.open_button.grid(row=0, column=1, pady=2, padx=2)
+        self.save_button.grid(row=1, column=0, pady=2, padx=2)
+        self.orientation_selector.grid(row=0, column=0, pady=2, padx=2)
+        self.open_button.grid(row=1, column=1, pady=2, padx=2)
 
         # Robot path
         self.opath_frame = ctk.CTkFrame(self.right_frame)
@@ -237,6 +242,7 @@ class App(ctk.CTk):
                 "create_time": time(),
                 "start_point": self.converter.pxs_to_mms(self.path.start_point),
                 "path": self.converter.list_pxs_to_mms(self.path.path),
+                "angle": self.orientation_selector.get()
             }
             file.write(dumps(file_content))
             file.close()
@@ -269,6 +275,7 @@ class App(ctk.CTk):
             content = loads(file.read())
             self.path.start_point = self.converter.mms_to_pxs(content["start_point"])
             self.path.path = self.converter.list_mms_to_pxs(content["path"])
+            self.orientation_selector.set(content["angle"])
 
             self.logger.info("File opened by", round(time() - t, 4))
         else:
